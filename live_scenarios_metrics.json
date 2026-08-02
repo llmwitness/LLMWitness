@@ -1,0 +1,28 @@
+{
+  "scenario_1_base_gateway": {
+    "latency_ms": 2064.92,
+    "pii_redaction_verified": true,
+    "hmac_auditing": "ACTIVE"
+  },
+  "scenario_2_semantic_cache": {
+    "cache_miss_latency_ms": 7.11,
+    "cache_hit_latency_ms": 3.23,
+    "speedup_factor": 2.2,
+    "cost_savings_percent": 100.0
+  },
+  "scenario_3_prompt_deduplication": {
+    "latency_ms": 3.21,
+    "tokens_saved_per_request": 16,
+    "prompt_deformation": "ZERO (Lossless De-duplication)"
+  },
+  "scenario_4_dynamic_model_routing": {
+    "latency_ms": 7.28,
+    "requested_model": "gpt-4o",
+    "routed_model": "gpt-4o-mini",
+    "model_cost_savings_percent": 97.0
+  },
+  "scenario_5_combined_pipeline": {
+    "latency_ms": 3.66,
+    "worm_hmac_seal": "daaad3cedc3434edf713f3a685264e2c10641769e48bf93334a6c0e01ef9b3aa"
+  }
+}

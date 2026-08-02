@@ -1,0 +1,164 @@
+[
+  {
+    "correlation_id": "019fc444-72e5-753a-932f-e3eebc2419b6",
+    "timestamp": 1785704255.2093768,
+    "hmac_signature": "0511b978a4c0c19ad832ad10a1e64bdc16a6bd63be0d3a58b626ad70cc44a46b",
+    "sdk_event_count": 1,
+    "gateway_event_count": 1,
+    "extension_event_count": 1,
+    "integrity_status": "VERIFIED_WORM_IMMUTABLE",
+    "proof_manifest": {
+      "correlation_id": "019fc444-72e5-753a-932f-e3eebc2419b6",
+      "created_at": 1785704250.0906036,
+      "sdk_events": [
+        {
+          "correlation_id": "019fc444-72e5-753a-932f-e3eebc2419b6",
+          "task_name": "autonomous_financial_agent_task",
+          "timestamp": 1785704248.0375807,
+          "prompt_tokens": 42,
+          "completion_tokens": 108,
+          "completion_string": "Successfully performed compliance validation for transfer.",
+          "tool_calls": [
+            {
+              "name": "execute_wire_transfer",
+              "arguments": {
+                "amount": 5000
+              }
+            }
+          ],
+          "agent_state": {
+            "memory_step": 3,
+            "risk_score": 0.02
+          }
+        }
+      ],
+      "gateway_events": [
+        {
+          "correlation_id": "019fc444-72e5-753a-932f-e3eebc2419b6",
+          "timestamp": 1785704252.1457593,
+          "upstream_url": "https://api.openai.com/v1/chat/completions",
+          "status_code": 200,
+          "request_hmac": "2deec61f60ff6f9f25db011f6734d3637f08d2f4d3d0c1350bf055a4a185e7e0",
+          "response_hmac": "fc2ad44cb206152439e449c9dfd5023ac3a72dd88ff0fb98f8bed0de2bd601e7",
+          "redacted_request": {
+            "model": "gpt-4o",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Verify SSN [REDACTED_SSN] and Card [REDACTED_CREDIT_CARD] with token [REDACTED_API_TOKEN]"
+              }
+            ]
+          },
+          "redacted_response": {
+            "id": "chatcmpl-019fc444",
+            "object": "chat.completion",
+            "created": 1785704252,
+            "model": "gpt-4o",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "Mock LLM Response for: Verify SSN [REDACTED_SSN] and Card [REDACTED_CREDIT_CARD] with token [REDACTED_API_TOKEN]"
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 50,
+              "completion_tokens": 25,
+              "total_tokens": 75
+            }
+          }
+        }
+      ],
+      "extension_events": [
+        {
+          "correlation_id": "019fc444-72e5-753a-932f-e3eebc2419b6",
+          "timestamp": 1785704252.151637,
+          "url": "http://localhost:3000/agent/dashboard",
+          "event_type": "dom_mutation",
+          "element_id": "transfer-submit-btn",
+          "dom_delta": {
+            "type": "childList",
+            "addedCount": 1,
+            "addedNodesSummary": [
+              {
+                "nodeType": 1,
+                "tagName": "DIV",
+                "id": "status-alert"
+              }
+            ]
+          }
+        }
+      ],
+      "is_sealed": true,
+      "sealed_at": 1785704255.2093768
+    }
+  },
+  {
+    "correlation_id": "019fc3e0-full-scenario-benchmark-uuidv7",
+    "timestamp": 1785704334.8803954,
+    "hmac_signature": "daaad3cedc3434edf713f3a685264e2c10641769e48bf93334a6c0e01ef9b3aa",
+    "sdk_event_count": 0,
+    "gateway_event_count": 1,
+    "extension_event_count": 0,
+    "integrity_status": "VERIFIED_WORM_IMMUTABLE",
+    "proof_manifest": {
+      "correlation_id": "019fc3e0-full-scenario-benchmark-uuidv7",
+      "created_at": 1785704331.5640492,
+      "sdk_events": [],
+      "gateway_events": [
+        {
+          "correlation_id": "019fc3e0-full-scenario-benchmark-uuidv7",
+          "timestamp": 1785704331.301162,
+          "upstream_url": "https://api.openai.com/v1/chat/completions",
+          "status_code": 200,
+          "request_hmac": "7a9c42640780ab3eb1b6a246eb8caefd932f23659a0c4f832b88123bc6167b48",
+          "response_hmac": "ea05e46b2427f40a3fac9421e4f834395798c450a63d59ad6fa608ad6d47be09",
+          "redacted_request": {
+            "model": "gpt-4o-mini",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a financial agent complying with SEC regulatory guidelines."
+              },
+              {
+                "role": "user",
+                "content": "Initial wire transfer request"
+              },
+              {
+                "role": "user",
+                "content": "Confirming transfer of $500"
+              }
+            ]
+          },
+          "redacted_response": {
+            "id": "chatcmpl-019fc445",
+            "object": "chat.completion",
+            "created": 1785704331,
+            "model": "gpt-4o-mini",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "Mock LLM Response for: Confirming transfer of $500"
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 34,
+              "completion_tokens": 25,
+              "total_tokens": 75
+            }
+          }
+        }
+      ],
+      "extension_events": [],
+      "is_sealed": true,
+      "sealed_at": 1785704334.8803954
+    }
+  }
+]

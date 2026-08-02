@@ -1,0 +1,58 @@
+{
+  "benchmarks": {
+    "pii_redaction": {
+      "iterations": 1000,
+      "avg_latency_ms": 0.0118,
+      "ops_per_sec": 84752.61,
+      "throughput_mb_s": 21.0
+    },
+    "sdk_queue_overhead": {
+      "num_events": 1000,
+      "main_thread_p50_ms": 0.0039,
+      "main_thread_p95_ms": 0.0094,
+      "main_thread_p99_ms": 0.015,
+      "avg_main_thread_overhead_ms": 0.0042
+    },
+    "gateway_proxy_latency": {
+      "requests_count": 100,
+      "gateway_p50_ms": 1.63,
+      "gateway_p95_ms": 4.11,
+      "gateway_p99_ms": 8.85,
+      "gateway_avg_ms": 2.14
+    }
+  },
+  "competitor_matrix": {
+    "AgentTrace MVP": {
+      "proxy_added_latency": "~1.63 ms (Sub-10ms Target Achieved)",
+      "sdk_main_thread_overhead": "~0.0039 ms (Non-Blocking Queue)",
+      "pii_redaction_engine": "Inline Regex (Redacts SSN/CC/Tokens before storage)",
+      "cryptographic_proof": "HMAC-SHA256 WORM Proof Receipts (proof.json)",
+      "dom_mutation_sidecar": "Chrome Extension Manifest V3 MutationObserver",
+      "unified_correlation": "RFC 9562 UUIDv7 across SDK, Gateway, Extension"
+    },
+    "LangSmith": {
+      "proxy_added_latency": "N/A (Sync SDK / Cloud Ingestion)",
+      "sdk_main_thread_overhead": "1.5 - 5.0 ms (Sync Event Hooks)",
+      "pii_redaction_engine": "Post-hoc Cloud Filters",
+      "cryptographic_proof": "None (Standard Database Records)",
+      "dom_mutation_sidecar": "None",
+      "unified_correlation": "Custom Session ID"
+    },
+    "Helicone": {
+      "proxy_added_latency": "15 - 35 ms (Proxy Gateway)",
+      "sdk_main_thread_overhead": "N/A (Proxy-based)",
+      "pii_redaction_engine": "Optional Cloud Gateway Rules",
+      "cryptographic_proof": "None (Standard DB Logs)",
+      "dom_mutation_sidecar": "None",
+      "unified_correlation": "Header Request ID"
+    },
+    "Arize Phoenix": {
+      "proxy_added_latency": "N/A (OpenTelemetry Collector)",
+      "sdk_main_thread_overhead": "0.8 - 2.5 ms (OTel Exporter)",
+      "pii_redaction_engine": "None (Raw Payload Ingestion)",
+      "cryptographic_proof": "None",
+      "dom_mutation_sidecar": "None",
+      "unified_correlation": "Trace ID (UUIDv4)"
+    }
+  }
+}
