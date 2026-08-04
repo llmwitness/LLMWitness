@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import time
@@ -6,15 +7,17 @@ from fastapi import FastAPI, HTTPException, Header, Request, status
 from pydantic import BaseModel, Field
 import uvicorn
 
-from utils import compute_hmac_signature, generate_uuidv7, verify_hmac_signature
+from utils import Ed25519KeyManager, generate_uuidv7, verify_proof_receipt
 
-SECRET_KEY = os.getenv("AGENTTRACE_SECRET_KEY", "agenttrace-production-worm-vault-key-2026")
 PROOF_FILE_PATH = os.getenv("AGENTTRACE_PROOF_PATH", "proof.json")
+
+# Instantiate central key manager (loads from ENV or generates Ed25519 keypair)
+key_manager = Ed25519KeyManager()
 
 app = FastAPI(
     title="AgentTrace Ingestion & WORM Vault Service",
     description="Enterprise Cryptographic Audit Engine for Autonomous Agents",
-    version="1.0.0"
+    version="1.1.0"
 )
 
 # In-memory storage representing Write-Once-Read-Many (WORM) audit store
@@ -39,10 +42,11 @@ class GatewayTelemetryPayload(BaseModel):
     timestamp: float
     upstream_url: str
     status_code: int
-    request_hmac: str
-    response_hmac: str
+    request_hmac: Optional[str] = None
+    response_hmac: Optional[str] = None
     redacted_request: Optional[Dict[str, Any]] = None
     redacted_response: Optional[Dict[str, Any]] = None
+    optimization_meta: Optional[Dict[str, Any]] = None
 
 
 class ExtensionTelemetryPayload(BaseModel):
@@ -118,14 +122,20 @@ async def seal_session_proof(request: SealRequest):
     session["is_sealed"] = True
     session["sealed_at"] = time.time()
     
-    # Serialize session deterministic representation
+    # Serialize session deterministic representation for Ed25519 signing
     session_json = json.dumps(session, sort_keys=True)
-    session_signature = compute_hmac_signature(session_json, SECRET_KEY)
+    signature_b64 = key_manager.sign(session_json)
+    public_key_fp = key_manager.get_public_key_fingerprint()
+    public_key_pem = key_manager.export_public_key_pem()
+    timestamp_iso = datetime.datetime.fromtimestamp(session["sealed_at"], tz=datetime.timezone.utc).isoformat()
     
     proof_record = {
         "correlation_id": correlation_id,
         "timestamp": session["sealed_at"],
-        "hmac_signature": session_signature,
+        "timestamp_iso": timestamp_iso,
+        "public_key_fingerprint": public_key_fp,
+        "public_key_pem": public_key_pem,
+        "signature": signature_b64,
         "sdk_event_count": len(session["sdk_events"]),
         "gateway_event_count": len(session["gateway_events"]),
         "extension_event_count": len(session["extension_events"]),
@@ -156,7 +166,9 @@ async def seal_session_proof(request: SealRequest):
     return {
         "status": "sealed",
         "correlation_id": correlation_id,
-        "hmac_signature": session_signature,
+        "public_key_fingerprint": public_key_fp,
+        "signature": signature_b64,
+        "timestamp_iso": timestamp_iso,
         "proof_file": PROOF_FILE_PATH
     }
 

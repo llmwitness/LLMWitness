@@ -2,22 +2,21 @@ import hashlib
 import json
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 import httpx
 from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request, Response, status
 from fastapi.responses import JSONResponse
 import uvicorn
 
-from utils import compute_hmac_signature, generate_uuidv7, redact_pii
+from utils import Ed25519KeyManager, generate_uuidv7, redact_payload
 
 UPSTREAM_OPENAI_URL = os.getenv("UPSTREAM_OPENAI_URL", "https://api.openai.com")
 INGESTION_SERVER_URL = os.getenv("INGESTION_SERVER_URL", "http://localhost:8000")
-SECRET_KEY = os.getenv("AGENTTRACE_SECRET_KEY", "agenttrace-production-worm-vault-key-2026")
 
 app = FastAPI(
     title="AgentTrace FastAPI Proxy Gateway & Optimization Engine",
-    description="Sub-10ms reverse proxy with PII redaction, semantic caching, token de-duplication, and dynamic routing",
-    version="1.1.0"
+    description="Sub-10ms reverse proxy with PII redaction, state-aware semantic caching, token de-duplication, and dynamic routing",
+    version="1.2.0"
 )
 
 # HTTP Client pool for high concurrency low-latency proxy forwarding
@@ -25,6 +24,7 @@ http_client = httpx.AsyncClient(timeout=30.0)
 
 # In-memory Semantic Cache Engine
 semantic_cache: Dict[str, Dict[str, Any]] = {}
+key_manager = Ed25519KeyManager()
 
 
 def hash_prompt_messages(messages: List[Dict[str, Any]]) -> str:
@@ -46,7 +46,6 @@ def deduplicate_system_prompts(messages: List[Dict[str, Any]]) -> Tuple[List[Dic
         if msg.get("role") == "system":
             content = msg.get("content", "")
             if content in seen_system_contents:
-                # Estimate token savings (~1 token per 4 chars)
                 tokens_saved += len(content) // 4
                 continue
             seen_system_contents.add(content)
@@ -60,8 +59,8 @@ async def send_gateway_telemetry(
     timestamp: float,
     upstream_url: str,
     status_code: int,
-    request_hmac: str,
-    response_hmac: str,
+    request_sig: str,
+    response_sig: str,
     redacted_req: Dict[str, Any],
     redacted_res: Dict[str, Any],
     cache_hit: bool = False,
@@ -74,8 +73,8 @@ async def send_gateway_telemetry(
         "timestamp": timestamp,
         "upstream_url": upstream_url,
         "status_code": status_code,
-        "request_hmac": request_hmac,
-        "response_hmac": response_hmac,
+        "request_hmac": request_sig,
+        "response_hmac": response_sig,
         "redacted_request": redacted_req,
         "redacted_response": redacted_res,
         "optimization_meta": {
@@ -99,6 +98,7 @@ async def chat_completions_proxy(
     request: Request,
     background_tasks: BackgroundTasks,
     x_agenttrace_correlation_id: Optional[str] = Header(None, alias="X-AgentTrace-Correlation-ID"),
+    x_agenttrace_state_hash: Optional[str] = Header(None, alias="X-AgentTrace-State-Hash"),
     x_agenttrace_enable_caching: Optional[bool] = Header(False, alias="X-AgentTrace-Enable-Caching"),
     x_agenttrace_enable_deduplication: Optional[bool] = Header(False, alias="X-AgentTrace-Enable-Deduplication"),
     x_agenttrace_enable_routing: Optional[bool] = Header(False, alias="X-AgentTrace-Enable-Routing"),
@@ -123,9 +123,9 @@ async def chat_completions_proxy(
     messages = req_json.get("messages", [])
     model_requested = req_json.get("model", "gpt-4o")
 
-    # Helper function for conditional scrubbing
+    # Helper function for conditional deep PII scrubbing
     def apply_pii_scrubbing(data: Any) -> Any:
-        return data if skip_pii else redact_pii(data)
+        return data if skip_pii else redact_payload(data)
 
     # 2. Optimization Engine Module A: Structural System Prompt Deduplication
     dedup_saved = 0
@@ -136,37 +136,40 @@ async def chat_completions_proxy(
     # 3. Optimization Engine Module B: Dynamic Model Routing
     routed_model = None
     if x_agenttrace_enable_routing or os.getenv("AGENTTRACE_ENABLE_ROUTING") == "true":
-        prompt_len = sum(len(m.get("content", "")) for m in messages)
-        # Simple heuristic: route short prompts from gpt-4o to cheaper gpt-4o-mini
+        prompt_len = sum(len(m.get("content", "")) for m in messages if isinstance(m, dict))
         if model_requested == "gpt-4o" and prompt_len < 600:
             routed_model = "gpt-4o-mini"
             req_json["model"] = routed_model
 
-    # 4. Optimization Engine Module C: Lossless Semantic Caching
+    # 4. Optimization Engine Module C: State-Aware Semantic Caching
     prompt_hash = hash_prompt_messages(messages)
     cache_enabled = x_agenttrace_enable_caching or os.getenv("AGENTTRACE_ENABLE_CACHING") == "true"
 
-    if cache_enabled and prompt_hash in semantic_cache:
-        cached_entry = semantic_cache[prompt_hash]
+    # Composite state-aware key: SHA256(prompt_hash + state_hash)
+    # Forced Cache Miss: If X-AgentTrace-State-Hash is missing/empty, bypass cache.
+    cache_key = None
+    if cache_enabled and x_agenttrace_state_hash:
+        composite_input = f"{prompt_hash}:{x_agenttrace_state_hash}"
+        cache_key = hashlib.sha256(composite_input.encode("utf-8")).hexdigest()
+
+    if cache_enabled and cache_key and cache_key in semantic_cache:
+        cached_entry = semantic_cache[cache_key]
         res_json = cached_entry["response"]
         status_code = 200
-        cache_hit = True
 
-        # Redact and HMAC Sign
         redacted_req = apply_pii_scrubbing(req_json)
         redacted_res = apply_pii_scrubbing(res_json)
-        req_hmac = compute_hmac_signature(json.dumps(redacted_req, sort_keys=True), SECRET_KEY)
-        res_hmac = compute_hmac_signature(json.dumps(redacted_res, sort_keys=True), SECRET_KEY)
+        req_sig = key_manager.sign(json.dumps(redacted_req, sort_keys=True))
+        res_sig = key_manager.sign(json.dumps(redacted_res, sort_keys=True))
 
-        # Stream telemetry in background
         background_tasks.add_task(
             send_gateway_telemetry,
             correlation_id,
             time.time(),
             "http://cache.local/v1/chat/completions",
             200,
-            req_hmac,
-            res_hmac,
+            req_sig,
+            res_sig,
             redacted_req,
             redacted_res,
             cache_hit=True,
@@ -187,7 +190,7 @@ async def chat_completions_proxy(
     # 5. Live Inference Proxy Forwarding
     redacted_req = apply_pii_scrubbing(req_json)
     req_json_str = json.dumps(redacted_req, sort_keys=True)
-    request_hmac = compute_hmac_signature(req_json_str, SECRET_KEY)
+    request_sig = key_manager.sign(req_json_str)
 
     target_url = f"{UPSTREAM_OPENAI_URL}/v1/chat/completions"
     proxy_headers = {
@@ -220,7 +223,7 @@ async def chat_completions_proxy(
             ],
             "usage": {"prompt_tokens": max(10, 50 - dedup_saved), "completion_tokens": 25, "total_tokens": 75}
         }
-        upstream_latency_ms = 1.0  # Mock upstream baseline
+        upstream_latency_ms = 1.0
     else:
         try:
             upstream_res = await http_client.post(target_url, json=req_json, headers=proxy_headers)
@@ -248,13 +251,13 @@ async def chat_completions_proxy(
             }
             status_code = 200
 
-    # Store in Semantic Cache if enabled
-    if cache_enabled and status_code == 200:
-        semantic_cache[prompt_hash] = {"response": res_json, "timestamp": time.time()}
+    # Store in Semantic Cache if enabled and state_hash was provided
+    if cache_enabled and cache_key and status_code == 200:
+        semantic_cache[cache_key] = {"response": res_json, "timestamp": time.time()}
 
     redacted_res = apply_pii_scrubbing(res_json)
     res_json_str = json.dumps(redacted_res, sort_keys=True)
-    response_hmac = compute_hmac_signature(res_json_str, SECRET_KEY)
+    response_sig = key_manager.sign(res_json_str)
 
     total_latency_ms = (time.perf_counter() - start_time) * 1000
     proxy_overhead_ms = max(0.05, total_latency_ms - upstream_latency_ms)
@@ -265,8 +268,8 @@ async def chat_completions_proxy(
         time.time(),
         target_url,
         status_code,
-        request_hmac,
-        response_hmac,
+        request_sig,
+        response_sig,
         redacted_req,
         redacted_res,
         cache_hit=False,
