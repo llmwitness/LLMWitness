@@ -1,0 +1,21 @@
+# AgentTrace Repository Code Ownership Mappings
+
+# Global repository fallback owners
+*       @Vinayakdata @AgentTrace-Maintainers
+
+# Core Python Engine & Cryptography
+/agenttrace_sdk.py   @AgentTrace-Maintainers
+/gateway.py          @AgentTrace-Maintainers
+/ingest.py           @AgentTrace-Maintainers
+/utils.py            @AgentTrace-Maintainers
+
+# Browser Extension & JavaScript SDK
+/agenttrace.js       @AgentTrace-Maintainers
+/extension/          @AgentTrace-Maintainers
+
+# Infrastructure, CI/CD, & Packaging
+/.github/            @AgentTrace-Maintainers
+/pyproject.toml      @AgentTrace-Maintainers
+/setup.py            @AgentTrace-Maintainers
+/Dockerfile          @AgentTrace-Maintainers
+/docker-compose.yml  @AgentTrace-Maintainers

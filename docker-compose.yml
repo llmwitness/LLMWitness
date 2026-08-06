@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  ingestion-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn ingest:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - AGENTTRACE_SECRET_KEY=agenttrace-production-worm-vault-key-2026
+      - AGENTTRACE_PII_ALLOW_LIST=ALLOW_ME_123,SAFE_CODE
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  gateway-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn gateway:app --host 0.0.0.0 --port 8011
+    ports:
+      - "8011:8011"
+    environment:
+      - INGESTION_SERVER_URL=http://ingestion-service:8000
+      - AGENTTRACE_MOCK_UPSTREAM=true
+      - AGENTTRACE_SECRET_KEY=agenttrace-production-worm-vault-key-2026
+    depends_on:
+      ingestion-service:
+        condition: service_healthy

@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agenttrace"
+version = "0.1.0"
+description = "High-performance multi-agent compliance telemetry logging, edge PII masking proxy, and cryptographic WORM proof vault"
+readme = "README.md"
+authors = [
+    { name = "AgentTrace Core Engineering Committee", email = "engineering@agenttrace.dev" }
+]
+license = "MIT"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Logging",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+    "cryptography>=41.0.0",
+    "httpx>=0.24.0",
+    "psutil>=5.9.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "hypothesis>=6.80.0",
+    "build>=0.10.0",
+    "twine>=4.0.2",
+    "mypy>=1.5.0"
+]
+benchmark = [
+    "psutil>=5.9.0",
+    "py-cpuinfo>=9.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/Vinayakdata/AgentTrace"
+Repository = "https://github.com/Vinayakdata/AgentTrace.git"
+Documentation = "https://github.com/Vinayakdata/AgentTrace#readme"
+BugTracker = "https://github.com/Vinayakdata/AgentTrace/issues"
+
+[tool.setuptools]
+packages = ["agenttrace"]
+py-modules = ["agenttrace_sdk", "gateway", "ingest", "utils", "config", "cli", "benchmark", "benchmark_scenarios"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_configs = true

@@ -1,0 +1,40 @@
+name: AgentTrace Automated Benchmarks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  run-benchmarks:
+    name: Run Production Benchmark Suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install httpx psutil py-cpuinfo cryptography
+
+      - name: Execute AgentTrace Benchmark Suite
+        run: |
+          python benchmarks/run_benchmarks.py
+
+      - name: Upload Benchmark Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-reports
+          path: |
+            benchmark_results.json
+            benchmark_results.csv
+            BENCHMARK_REPORT.md

@@ -1,3 +1,43 @@
+Metadata-Version: 2.4
+Name: agenttrace
+Version: 0.1.0
+Summary: High-performance multi-agent compliance telemetry logging, edge PII masking proxy, and cryptographic WORM proof vault
+Author-email: AgentTrace Core Engineering Committee <engineering@agenttrace.dev>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/Vinayakdata/AgentTrace
+Project-URL: Repository, https://github.com/Vinayakdata/AgentTrace.git
+Project-URL: Documentation, https://github.com/Vinayakdata/AgentTrace#readme
+Project-URL: BugTracker, https://github.com/Vinayakdata/AgentTrace/issues
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Security
+Classifier: Topic :: System :: Logging
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fastapi>=0.100.0
+Requires-Dist: uvicorn>=0.22.0
+Requires-Dist: cryptography>=41.0.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: psutil>=5.9.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: hypothesis>=6.80.0; extra == "dev"
+Requires-Dist: build>=0.10.0; extra == "dev"
+Requires-Dist: twine>=4.0.2; extra == "dev"
+Requires-Dist: mypy>=1.5.0; extra == "dev"
+Provides-Extra: benchmark
+Requires-Dist: psutil>=5.9.0; extra == "benchmark"
+Requires-Dist: py-cpuinfo>=9.0.0; extra == "benchmark"
+Dynamic: license-file
+
 # AgentTrace: Immutable Audit Logging & Edge PII Masking Gateway for Autonomous AI Agents
 
 [![CI Matrix](https://github.com/Vinayakdata/AgentTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/Vinayakdata/AgentTrace/actions/workflows/ci.yml)

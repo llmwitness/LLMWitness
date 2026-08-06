@@ -1,0 +1,12 @@
+include README.md
+include CHANGES.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+include setup.py
+include agenttrace.js
+
+recursive-include extension *.json *.js
+recursive-include tech-docs *.md
+recursive-include tests *.py
+recursive-include benchmarks *.py *.md

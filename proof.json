@@ -1,229 +1,75 @@
-[
-  {
-    "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-    "timestamp": 1785878449.1504192,
-    "timestamp_iso": "2026-08-04T21:20:49.150419+00:00",
-    "public_key_fingerprint": "53c47b4105b2d59b2d41b65d989de61f9516f95bbc7b988c053ff0dde0c67950",
-    "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAsJJNYStJV/dmikJG0z/vIJ2PEjw3wNrth+gDzvkK0SI=\n-----END PUBLIC KEY-----\n",
-    "signature": "j9j6kYx9ttS+8lQYWhN0GE++miWKpxRJU0oUJREs6RIb/swEkqshB4R3JTSIcwNfJKuVkz4CcAufGt78Gk9zBQ==",
-    "sdk_event_count": 1,
-    "gateway_event_count": 4,
-    "extension_event_count": 1,
-    "integrity_status": "VERIFIED_WORM_IMMUTABLE",
-    "proof_manifest": {
-      "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-      "created_at": 1785878443.9881005,
-      "sdk_events": [
-        {
-          "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-          "task_name": "autonomous_financial_agent_task",
-          "timestamp": 1785878441.9418337,
-          "prompt_tokens": 42,
-          "completion_tokens": 108,
-          "completion_string": "Successfully performed compliance validation for transfer.",
-          "tool_calls": [
+{
+  "correlation_id": "019fd8e8-d0b9-77b6-91cd-4445f3f28c51",
+  "sealed_at": "2026-08-06T21:09:24.845373+00:00",
+  "events": {
+    "sdk": [
+      {
+        "correlation_id": "019fd8e8-d0b9-77b6-91cd-4445f3f28c51",
+        "task_name": "integration_task",
+        "timestamp": 1786050564.2819712,
+        "prompt_tokens": 50,
+        "completion_tokens": 100,
+        "completion_string": "Integration response string",
+        "tool_calls": [
+          {
+            "name": "test_tool",
+            "arguments": {
+              "param": 1
+            }
+          }
+        ],
+        "agent_state": {}
+      }
+    ],
+    "gateway": [
+      {
+        "correlation_id": "019fd8e8-d0b9-77b6-91cd-4445f3f28c51",
+        "timestamp": 1786050564.3370903,
+        "upstream_url": "MOCK_UPSTREAM",
+        "status_code": 200,
+        "request_hmac": null,
+        "response_hmac": null,
+        "redacted_request": {
+          "model": "gpt-4o",
+          "messages": [
             {
-              "name": "execute_wire_transfer",
-              "arguments": {
-                "amount": 5000
-              }
+              "role": "user",
+              "content": "Verify SSN [REDACTED_SSN]"
+            }
+          ]
+        },
+        "redacted_response": {
+          "id": "chatcmpl-019fd8e8",
+          "object": "chat.completion",
+          "created": 1786050564,
+          "model": "gpt-4o",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Mock response content for model gpt-4o. Verified."
+              },
+              "finish_reason": "stop"
             }
           ],
-          "agent_state": {
-            "memory_step": 3,
-            "risk_score": 0.02
-          }
-        }
-      ],
-      "gateway_events": [
-        {
-          "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-          "timestamp": 1785878446.0790932,
-          "upstream_url": "http://cache.local/v1/chat/completions",
-          "status_code": 200,
-          "request_hmac": "ONN0qluL4Ed/MFDwq2mq8xhINDfd4DQXENELuG3ocI4b7F8Dv72CDH8uE+hETJ6KOWIZuBc83y9l9IDG21sVCw==",
-          "response_hmac": "pgONY4biNOinzijy4F0n7t6aiTOcFOcfygufP1mBMsnWBEQI6PYf08biOqgQuKfkCw8W6evJpt7ppE6sbcE7Dg==",
-          "redacted_request": {
-            "model": "gpt-4o",
-            "messages": [
-              {
-                "role": "user",
-                "content": "Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-              }
-            ]
-          },
-          "redacted_response": {
-            "id": "chatcmpl-019fcea6",
-            "object": "chat.completion",
-            "created": 1785878446,
-            "model": "gpt-4o",
-            "choices": [
-              {
-                "index": 0,
-                "message": {
-                  "role": "assistant",
-                  "content": "Mock LLM Response for: Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-                },
-                "finish_reason": "stop"
-              }
-            ],
-            "usage": {
-              "prompt_tokens": 50,
-              "completion_tokens": 25,
-              "total_tokens": 75
-            }
-          },
-          "optimization_meta": {
-            "cache_hit": true,
-            "dedup_tokens_saved": 0,
-            "routed_model": null
+          "usage": {
+            "prompt_tokens": 15,
+            "completion_tokens": 25,
+            "total_tokens": 40
           }
         },
-        {
-          "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-          "timestamp": 1785878446.0830007,
-          "upstream_url": "https://api.openai.com/v1/chat/completions",
-          "status_code": 200,
-          "request_hmac": "ONN0qluL4Ed/MFDwq2mq8xhINDfd4DQXENELuG3ocI4b7F8Dv72CDH8uE+hETJ6KOWIZuBc83y9l9IDG21sVCw==",
-          "response_hmac": "pgONY4biNOinzijy4F0n7t6aiTOcFOcfygufP1mBMsnWBEQI6PYf08biOqgQuKfkCw8W6evJpt7ppE6sbcE7Dg==",
-          "redacted_request": {
-            "model": "gpt-4o",
-            "messages": [
-              {
-                "role": "user",
-                "content": "Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-              }
-            ]
-          },
-          "redacted_response": {
-            "id": "chatcmpl-019fcea6",
-            "object": "chat.completion",
-            "created": 1785878446,
-            "model": "gpt-4o",
-            "choices": [
-              {
-                "index": 0,
-                "message": {
-                  "role": "assistant",
-                  "content": "Mock LLM Response for: Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-                },
-                "finish_reason": "stop"
-              }
-            ],
-            "usage": {
-              "prompt_tokens": 50,
-              "completion_tokens": 25,
-              "total_tokens": 75
-            }
-          },
-          "optimization_meta": {
-            "cache_hit": false,
-            "dedup_tokens_saved": 0,
-            "routed_model": null
-          }
-        },
-        {
-          "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-          "timestamp": 1785878446.086134,
-          "upstream_url": "https://api.openai.com/v1/chat/completions",
-          "status_code": 200,
-          "request_hmac": "ONN0qluL4Ed/MFDwq2mq8xhINDfd4DQXENELuG3ocI4b7F8Dv72CDH8uE+hETJ6KOWIZuBc83y9l9IDG21sVCw==",
-          "response_hmac": "pgONY4biNOinzijy4F0n7t6aiTOcFOcfygufP1mBMsnWBEQI6PYf08biOqgQuKfkCw8W6evJpt7ppE6sbcE7Dg==",
-          "redacted_request": {
-            "model": "gpt-4o",
-            "messages": [
-              {
-                "role": "user",
-                "content": "Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-              }
-            ]
-          },
-          "redacted_response": {
-            "id": "chatcmpl-019fcea6",
-            "object": "chat.completion",
-            "created": 1785878446,
-            "model": "gpt-4o",
-            "choices": [
-              {
-                "index": 0,
-                "message": {
-                  "role": "assistant",
-                  "content": "Mock LLM Response for: Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-                },
-                "finish_reason": "stop"
-              }
-            ],
-            "usage": {
-              "prompt_tokens": 50,
-              "completion_tokens": 25,
-              "total_tokens": 75
-            }
-          },
-          "optimization_meta": {
-            "cache_hit": false,
-            "dedup_tokens_saved": 0,
-            "routed_model": null
-          }
-        },
-        {
-          "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-          "timestamp": 1785878446.0683863,
-          "upstream_url": "https://api.openai.com/v1/chat/completions",
-          "status_code": 200,
-          "request_hmac": "ONN0qluL4Ed/MFDwq2mq8xhINDfd4DQXENELuG3ocI4b7F8Dv72CDH8uE+hETJ6KOWIZuBc83y9l9IDG21sVCw==",
-          "response_hmac": "pgONY4biNOinzijy4F0n7t6aiTOcFOcfygufP1mBMsnWBEQI6PYf08biOqgQuKfkCw8W6evJpt7ppE6sbcE7Dg==",
-          "redacted_request": {
-            "model": "gpt-4o",
-            "messages": [
-              {
-                "role": "user",
-                "content": "Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-              }
-            ]
-          },
-          "redacted_response": {
-            "id": "chatcmpl-019fcea6",
-            "object": "chat.completion",
-            "created": 1785878446,
-            "model": "gpt-4o",
-            "choices": [
-              {
-                "index": 0,
-                "message": {
-                  "role": "assistant",
-                  "content": "Mock LLM Response for: Verify SSN [REDACTED_SSN] with token [REDACTED_API_TOKEN]"
-                },
-                "finish_reason": "stop"
-              }
-            ],
-            "usage": {
-              "prompt_tokens": 50,
-              "completion_tokens": 25,
-              "total_tokens": 75
-            }
-          },
-          "optimization_meta": {
-            "cache_hit": false,
-            "dedup_tokens_saved": 0,
-            "routed_model": null
-          }
+        "optimization_meta": {
+          "cache_hit": false,
+          "dedup_tokens_saved": 0,
+          "routed_model": null,
+          "pii_scrubbing_active": true
         }
-      ],
-      "extension_events": [
-        {
-          "correlation_id": "019fcea6-6fd5-7f48-8a32-b2795de78fe3",
-          "timestamp": 1785878446.0873482,
-          "url": "http://localhost:3000/agent/headless_nav",
-          "event_type": "fetch_request",
-          "element_id": "login-btn",
-          "dom_delta": {
-            "method": "POST",
-            "url": "/api/action"
-          }
-        }
-      ],
-      "is_sealed": true,
-      "sealed_at": 1785878449.1504192
-    }
-  }
-]
+      }
+    ],
+    "extension": []
+  },
+  "ed25519_signature": "kC6pEh2Pu1nf+DzqVYNxJ4isl2HlYKK8+f3bwHIt7Si2ZJuhGvUFfLb2RE4iXJbWuWUpGqOseZtQ+qw2AxEDDg==",
+  "public_key_fingerprint": "11e253dcf1435ff7718cb092ca83f1996c8493e2879e3ca39193b8c88da034ba",
+  "hmac_signature": "3894ae20483aadcbfa8b1ba84f7addda15dbce05004735dd8aaa86a0dfcc06b7"
+}

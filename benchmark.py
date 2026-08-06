@@ -44,7 +44,7 @@ def start_server(module_name: str, port: int):
     cmd = [sys.executable, "-m", "uvicorn", f"{module_name}:app", "--host", "127.0.0.1", "--port", str(port)]
     env = os.environ.copy()
     env["AGENTTRACE_MOCK_UPSTREAM"] = "true"
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
+    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env)
     return proc
 
 

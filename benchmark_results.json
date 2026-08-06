@@ -1,58 +1,141 @@
 {
-  "benchmarks": {
-    "pii_redaction": {
-      "iterations": 1000,
-      "avg_latency_ms": 0.0118,
-      "ops_per_sec": 84752.61,
-      "throughput_mb_s": 21.0
-    },
-    "sdk_queue_overhead": {
-      "num_events": 1000,
-      "main_thread_p50_ms": 0.0039,
-      "main_thread_p95_ms": 0.0094,
-      "main_thread_p99_ms": 0.015,
-      "avg_main_thread_overhead_ms": 0.0042
-    },
-    "gateway_proxy_latency": {
-      "requests_count": 100,
-      "gateway_p50_ms": 1.63,
-      "gateway_p95_ms": 4.11,
-      "gateway_p99_ms": 8.85,
-      "gateway_avg_ms": 2.14
-    }
+  "hardware_metadata": {
+    "cpu": "Intel Core Ultra 9 275HX (24 Cores / 24 Threads, up to 5.4 GHz)",
+    "ram": "31.43 GB DDR5",
+    "gpu": "NVIDIA GeForce RTX 5070 Laptop GPU, 8151 MiB",
+    "storage": "1 TB NVMe SSD",
+    "os": "Windows 11 (10.0.26200)",
+    "linux_distro": "Ubuntu 24.04 LTS / WSL2 Linux",
+    "python_version": "3.14.6",
+    "python_compiler": "MSC v.1944 64 bit (AMD64)",
+    "git_commit_hash": "d74ed58adbb268f19eadc48fd42ec2ec2258ca83",
+    "timestamp_utc": "2026-08-06 21:12:08 UTC"
   },
-  "competitor_matrix": {
-    "AgentTrace MVP": {
-      "proxy_added_latency": "~1.63 ms (Sub-10ms Target Achieved)",
-      "sdk_main_thread_overhead": "~0.0039 ms (Non-Blocking Queue)",
-      "pii_redaction_engine": "Inline Regex (Redacts SSN/CC/Tokens before storage)",
-      "cryptographic_proof": "HMAC-SHA256 WORM Proof Receipts (proof.json)",
-      "dom_mutation_sidecar": "Chrome Extension Manifest V3 MutationObserver",
-      "unified_correlation": "RFC 9562 UUIDv7 across SDK, Gateway, Extension"
+  "benchmarks": {
+    "sdk_queue": {
+      "benchmark_name": "sdk_queue_overhead",
+      "warmup_iterations": 200,
+      "measurement_iterations": 2000,
+      "main_thread_p50_ms": 0.0097,
+      "main_thread_p95_ms": 0.012,
+      "main_thread_p99_ms": 0.014602,
+      "main_thread_mean_ms": 0.01038,
+      "main_thread_p50_us": 9.7,
+      "main_thread_p95_us": 12.0,
+      "main_thread_p99_us": 14.6,
+      "main_thread_mean_us": 10.38,
+      "events_per_sec": 96335.4
     },
-    "LangSmith": {
-      "proxy_added_latency": "N/A (Sync SDK / Cloud Ingestion)",
-      "sdk_main_thread_overhead": "1.5 - 5.0 ms (Sync Event Hooks)",
-      "pii_redaction_engine": "Post-hoc Cloud Filters",
-      "cryptographic_proof": "None (Standard Database Records)",
-      "dom_mutation_sidecar": "None",
-      "unified_correlation": "Custom Session ID"
+    "gateway_proxy": {
+      "benchmark_name": "gateway_proxy_overhead",
+      "warmup_iterations": 50,
+      "measurement_iterations": 500,
+      "successful_requests": 500,
+      "gateway_p50_ms": 2.0233,
+      "gateway_p95_ms": 2.3678,
+      "gateway_p99_ms": 2.6596,
+      "gateway_mean_ms": 2.076,
+      "requests_per_sec": 481.7
     },
-    "Helicone": {
-      "proxy_added_latency": "15 - 35 ms (Proxy Gateway)",
-      "sdk_main_thread_overhead": "N/A (Proxy-based)",
-      "pii_redaction_engine": "Optional Cloud Gateway Rules",
-      "cryptographic_proof": "None (Standard DB Logs)",
-      "dom_mutation_sidecar": "None",
-      "unified_correlation": "Header Request ID"
+    "ed25519_crypto": {
+      "benchmark_name": "ed25519_crypto_performance",
+      "warmup_iterations": 100,
+      "measurement_iterations": 1000,
+      "sign_p50_ms": 0.0179,
+      "sign_p95_ms": 0.0191,
+      "sign_p99_ms": 0.023602,
+      "sign_mean_ms": 0.018071,
+      "sign_ops_per_sec": 55337.28,
+      "verify_p50_ms": 0.0484,
+      "verify_p95_ms": 0.052,
+      "verify_p99_ms": 0.063906,
+      "verify_mean_ms": 0.049106,
+      "verify_ops_per_sec": 20364.07
     },
-    "Arize Phoenix": {
-      "proxy_added_latency": "N/A (OpenTelemetry Collector)",
-      "sdk_main_thread_overhead": "0.8 - 2.5 ms (OTel Exporter)",
-      "pii_redaction_engine": "None (Raw Payload Ingestion)",
-      "cryptographic_proof": "None",
-      "dom_mutation_sidecar": "None",
-      "unified_correlation": "Trace ID (UUIDv4)"
+    "pii_engine": {
+      "benchmark_name": "pii_throughput_and_large_payloads",
+      "standard_payload_size_bytes": 258,
+      "standard_iterations": 1000,
+      "standard_p50_ms": 0.016,
+      "standard_p95_ms": 0.0176,
+      "standard_p99_ms": 0.019603,
+      "standard_mean_ms": 0.016341,
+      "standard_ops_per_sec": 61195.76,
+      "standard_throughput_mb_s": 15.06,
+      "large_payload_size_kb": 1098.7,
+      "large_iterations": 20,
+      "large_p50_ms": 58.1122,
+      "large_p95_ms": 59.0175,
+      "large_p99_ms": 59.1072,
+      "large_mean_ms": 57.7042,
+      "large_throughput_mb_s": 18.59
+    },
+    "cache": {
+      "benchmark_name": "cache_hit_vs_miss",
+      "iterations": 200,
+      "cache_miss_p50_ms": 2.0192,
+      "cache_miss_p95_ms": 2.3331,
+      "cache_miss_p99_ms": 2.6072,
+      "cache_miss_mean_ms": 2.0616,
+      "cache_hit_p50_ms": 2.0088,
+      "cache_hit_p95_ms": 2.1784,
+      "cache_hit_p99_ms": 2.3206,
+      "cache_hit_mean_ms": 2.024,
+      "speedup_multiplier_p50": 1.01,
+      "cost_saved_percentage": 100.0
+    },
+    "browser_sdk": {
+      "benchmark_name": "browser_sdk_and_dom_sidecar",
+      "execution_environment": "Python DOM Simulation Engine",
+      "iterations": 1000,
+      "mutation_record_mean_ms": 0.001252,
+      "mutation_record_mean_us": 1.25,
+      "events_per_sec": 798722.35
+    },
+    "concurrency": {
+      "concurrency_10": {
+        "num_workers": 10,
+        "total_requests": 200,
+        "total_duration_sec": 0.575,
+        "requests_per_sec": 347.96,
+        "p50_latency_ms": 28.23,
+        "p95_latency_ms": 37.95,
+        "error_count": 0,
+        "error_rate_percent": 0.0
+      },
+      "concurrency_50": {
+        "num_workers": 50,
+        "total_requests": 1000,
+        "total_duration_sec": 6.394,
+        "requests_per_sec": 156.41,
+        "p50_latency_ms": 84.44,
+        "p95_latency_ms": 576.93,
+        "error_count": 0,
+        "error_rate_percent": 0.0
+      }
+    },
+    "soak": {
+      "benchmark_name": "soak_test_stability",
+      "duration_sec": 10,
+      "total_requests_completed": 93,
+      "avg_throughput_req_sec": 9.3,
+      "p50_latency_ms": 3.2,
+      "p95_latency_ms": 342.12,
+      "initial_rss_mb": 105.11,
+      "final_rss_mb": 105.11,
+      "memory_delta_mb": 0.0
+    },
+    "stress": {
+      "concurrency_100": {
+        "num_workers": 100,
+        "total_requests": 1000,
+        "total_duration_sec": 9.838,
+        "requests_per_sec": 101.64,
+        "p50_latency_ms": 149.19,
+        "p95_latency_ms": 961.21,
+        "error_count": 0,
+        "error_rate_percent": 0.0
+      }
     }
   }
 }

@@ -1,0 +1,16 @@
+fastapi>=0.100.0
+uvicorn>=0.22.0
+cryptography>=41.0.0
+httpx>=0.24.0
+psutil>=5.9.0
+
+[benchmark]
+psutil>=5.9.0
+py-cpuinfo>=9.0.0
+
+[dev]
+pytest>=7.4.0
+hypothesis>=6.80.0
+build>=0.10.0
+twine>=4.0.2
+mypy>=1.5.0
