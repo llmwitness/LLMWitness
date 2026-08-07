@@ -13,4 +13,3 @@ def record_agent_run():
         )
     tracker.flush()
     tracker.shutdown()
-
