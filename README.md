@@ -76,6 +76,10 @@ Verification proves that the signed fields match the public key embedded in the 
 
 LLMWitness does not establish compliance with HIPAA, GDPR, SOC 2, the EU AI Act, or any other law or framework. Applicability depends on the deployment, processing purposes, jurisdiction, contracts, technical controls, and organizational practices. Obtain qualified legal and security advice.
 
+## Branch workflow
+
+Public contributors can clone the repository and open pull requests from feature branches or forks into `integ`. After review and CI, `integ` can be merged into `main` through a pull request. Direct pushes to `integ` and `main` are blocked.
+
 ## Security model
 
 Read [SECURITY.md](SECURITY.md) before using the project. The Community edition is not an authentication, authorization, replay-prevention, DLP, retention, or compliance system. UUIDv7 provides correlation and approximate creation ordering; it is not a security token.

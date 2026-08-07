@@ -2,6 +2,13 @@
 
 Focused bug fixes, tests, documentation corrections, and narrowly scoped improvements are welcome.
 
+Branch flow:
+
+- Open pull requests from feature branches or forks into `integ`.
+- After review and CI, merge `integ` into `main` through a pull request.
+- Do not open direct pull requests to `main` from feature branches.
+- Do not push directly to `main` or `integ`.
+
 Before submitting a change:
 
 ```bash
