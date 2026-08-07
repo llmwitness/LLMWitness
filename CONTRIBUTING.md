@@ -22,3 +22,5 @@ python -m build
 Do not commit receipts, logs, generated packages, benchmark outputs, credentials, personal data, private prompts, or proprietary Cloud/Enterprise implementation. Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 Contributions are accepted under Apache-2.0. Contributors must have the right to submit their work. Repository owners should obtain legal advice before introducing a contributor agreement or attempting future relicensing.
+
+PyPI publishing uses GitHub Actions with Trusted Publishing (OIDC) once the PyPI project is linked to this repository. Do not add manual upload tokens to the workflow.
