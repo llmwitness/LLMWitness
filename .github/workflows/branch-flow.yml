@@ -2,7 +2,7 @@ name: LLMWitness PR Flow Gate
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, integ ]
 
 jobs:
   source-branch-policy:
@@ -12,7 +12,7 @@ jobs:
       - name: Require main PRs to come from integ
         shell: bash
         run: |
-          if [ "${{ github.head_ref }}" != "integ" ]; then
+          if [ "${{ github.base_ref }}" = "main" ] && [ "${{ github.head_ref }}" != "integ" ]; then
             echo "Pull requests to main must come from integ."
             exit 1
           fi
