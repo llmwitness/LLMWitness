@@ -12,11 +12,22 @@
   function generateUUIDv7() {
     const now = Date.now();
     const hexTime = now.toString(16).padStart(12, '0');
-    const randA = Math.floor(Math.random() * 0x0fff).toString(16).padStart(3, '0');
-    const variant = (8 + Math.floor(Math.random() * 4)).toString(16);
-    const randB = Array.from({ length: 15 }, () =>
-      Math.floor(Math.random() * 16).toString(16)
+    const randomBytes = new Uint8Array(10);
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      crypto.getRandomValues(randomBytes);
+    } else {
+      for (let i = 0; i < randomBytes.length; i += 1) {
+        randomBytes[i] = Math.floor(Math.random() * 256);
+      }
+    }
+    const randomHex = Array.from(randomBytes, (value) =>
+      value.toString(16).padStart(2, '0')
     ).join('');
+    const randA = (parseInt(randomHex.slice(0, 4), 16) & 0x0fff)
+      .toString(16)
+      .padStart(3, '0');
+    const variant = (8 + (parseInt(randomHex.slice(4, 6), 16) & 0x03)).toString(16);
+    const randB = randomHex.slice(5, 20).padEnd(15, '0');
 
     return `${hexTime.slice(0, 8)}-${hexTime.slice(8, 12)}-7${randA}-${variant}${randB.slice(
       0,
@@ -29,7 +40,9 @@
       this.ingestionUrl = (options.ingestionUrl || 'http://localhost:8000').replace(/\/$/, '');
       this.correlationId = options.correlationId || generateUUIDv7();
       this.debounceMs = options.debounceMs || 100;
+      this.maxQueueSize = options.maxQueueSize || 1000;
       this.queue = [];
+      this.droppedEvents = 0;
       this.timer = null;
       this.initialized = false;
       this.origFetch = null;
@@ -60,14 +73,22 @@
     }
 
     enqueue(event) {
+      if (this.queue.length >= this.maxQueueSize) {
+        this.droppedEvents += 1;
+        return false;
+      }
       const payload = {
         correlation_id: this.correlationId,
         timestamp: Date.now() / 1000,
-        url: typeof window !== 'undefined' ? window.location.href : 'http://node.local',
+        url:
+          typeof window !== 'undefined'
+            ? `${window.location.origin}${window.location.pathname}`
+            : 'http://node.local',
         ...event,
       };
       this.queue.push(payload);
       this.scheduleFlush();
+      return true;
     }
 
     scheduleFlush() {
@@ -83,7 +104,8 @@
       for (const item of items) {
         try {
           const endpoint = `${this.ingestionUrl}/ingest/extension`;
-          const rawFetch = this.origFetch || (typeof fetch === 'function' ? fetch : null);
+          const rawFetch =
+            this.origFetch || (typeof fetch === 'function' ? fetch.bind(globalThis) : null);
           if (rawFetch) {
             await rawFetch(endpoint, {
               method: 'POST',
@@ -115,12 +137,14 @@
 
         init = init || {};
         let headers;
+        const inheritedHeaders =
+          typeof Request !== 'undefined' && input instanceof Request ? input.headers : undefined;
         if (init.headers instanceof Headers) {
           headers = init.headers;
         } else if (Array.isArray(init.headers)) {
           headers = new Headers(init.headers);
         } else {
-          headers = new Headers(init.headers || {});
+          headers = new Headers(init.headers || inheritedHeaders || {});
         }
 
         if (!headers.has('X-LLMWitness-Correlation-ID')) {

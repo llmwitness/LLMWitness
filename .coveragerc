@@ -1,17 +1,14 @@
 [run]
-source = [
-    "llmwitness"
-]
-omit = [
-    "tests/*"
-]
+source =
+    llmwitness
+omit =
+    tests/*
 
 [report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-    "pass"
-]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
 show_missing = true
+fail_under = 80

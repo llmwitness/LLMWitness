@@ -39,10 +39,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Bandit
+      - name: Install security scanners
         run: |
-          pip install bandit
+          pip install bandit pip-audit
 
       - name: Run Bandit Security Checks
         run: |
           bandit -r llmwitness -ll
+
+      - name: Audit runtime dependencies
+        run: |
+          pip-audit -r requirements.txt

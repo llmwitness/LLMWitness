@@ -10,6 +10,21 @@ from llmwitness.config import get_secret_key
 from llmwitness.utils import generate_uuidv7, verify_proof_receipt
 
 
+def test_benchmark_harness_smoke():
+    from benchmarks.benchmark_local import run
+
+    result = run(iterations=3, warmup=1)
+    assert result["schema_version"] == 1
+    assert result["methodology"]["iterations_per_case"] == 3
+    assert set(result["cases"]) == {
+        "redact_payload",
+        "ed25519_sign",
+        "ed25519_verify",
+        "sdk_record_event",
+        "mock_gateway_request",
+    }
+
+
 def test_real_upstream_body_is_not_redacted(monkeypatch):
     raw_upstream = (
         b'{"value":"123-45-6789","nested":{"token":"sk-12345678901234567890"}}'
@@ -35,6 +50,33 @@ def test_real_upstream_body_is_not_redacted(monkeypatch):
     )
     assert response.status_code == 200
     assert response.content == raw_upstream
+
+
+def test_gateway_telemetry_accepts_json_array_response(monkeypatch):
+    monkeypatch.setattr(ingest, "INGEST_TOKEN", None)
+    ingest.audit_vault.clear()
+    client = TestClient(ingest.app)
+    payload = {
+        "correlation_id": generate_uuidv7(),
+        "timestamp": 1.0,
+        "upstream_url": "https://upstream.test/v1/chat/completions",
+        "status_code": 200,
+        "redacted_request": {"model": "test"},
+        "redacted_response": [{"result": "ok"}],
+    }
+    response = client.post("/ingest/gateway", json=payload)
+    assert response.status_code == 201
+
+
+@pytest.mark.parametrize("timestamp", ["NaN", "Infinity", "-Infinity"])
+def test_ingestion_rejects_non_finite_timestamps(monkeypatch, timestamp):
+    monkeypatch.setattr(ingest, "INGEST_TOKEN", None)
+    body = {
+        "correlation_id": generate_uuidv7(),
+        "task_name": "timestamp-validation",
+        "timestamp": timestamp,
+    }
+    assert TestClient(ingest.app).post("/ingest/sdk", json=body).status_code == 422
 
 
 def test_receipt_lifecycle_and_tamper_detection(tmp_path, monkeypatch):

@@ -19,19 +19,6 @@ class LLMWitnessConfig:
         self.ingestion_url: str = os.getenv(
             "INGESTION_SERVER_URL", "http://localhost:8000"
         )
-        self.gateway_port: int = int(os.getenv("GATEWAY_PORT", "8011"))
-        self.ingest_port: int = int(os.getenv("INGEST_PORT", "8000"))
-        self.mock_upstream: bool = os.getenv(
-            "LLMWITNESS_MOCK_UPSTREAM", "false"
-        ).lower() in ("true", "1", "yes")
-        self.disable_pii: bool = os.getenv(
-            "LLMWITNESS_DISABLE_PII_SCRUBBING", "false"
-        ).lower() in ("true", "1", "yes")
-
-        allow_raw = os.getenv("LLMWITNESS_PII_ALLOW_LIST", "")
-        self.pii_allow_list: list[str] = [
-            x.strip() for x in allow_raw.split(",") if x.strip()
-        ]
 
     def validate(self) -> list[str]:
         """Validates configuration parameters and returns list of error messages (if any)."""

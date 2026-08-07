@@ -1,6 +1,7 @@
 """Local development telemetry ingestion and tamper-evident receipts."""
 
 import datetime
+import hmac
 import json
 import os
 import time
@@ -64,7 +65,7 @@ def _bounded_dict() -> dict[str, Any]:
 class SDKTelemetryPayload(BaseModel):
     correlation_id: str = Field(min_length=36, max_length=36)
     task_name: str = Field(min_length=1, max_length=256)
-    timestamp: float
+    timestamp: float = Field(allow_inf_nan=False)
     prompt_tokens: int = Field(default=0, ge=0)
     completion_tokens: int = Field(default=0, ge=0)
     completion_string: str | None = Field(default=None, max_length=100_000)
@@ -74,19 +75,19 @@ class SDKTelemetryPayload(BaseModel):
 
 class GatewayTelemetryPayload(BaseModel):
     correlation_id: str = Field(min_length=36, max_length=36)
-    timestamp: float
+    timestamp: float = Field(allow_inf_nan=False)
     upstream_url: str = Field(max_length=2048)
     status_code: int = Field(ge=100, le=599)
     request_hmac: str | None = Field(default=None, max_length=256)
     response_hmac: str | None = Field(default=None, max_length=256)
     redacted_request: dict[str, Any] | None = None
-    redacted_response: dict[str, Any] | None = None
+    redacted_response: Any = None
     optimization_meta: dict[str, Any] | None = None
 
 
 class ExtensionTelemetryPayload(BaseModel):
     correlation_id: str = Field(min_length=36, max_length=36)
-    timestamp: float
+    timestamp: float = Field(allow_inf_nan=False)
     url: str = Field(max_length=2048)
     event_type: str = Field(min_length=1, max_length=128)
     element_id: str | None = Field(default=None, max_length=512)
@@ -108,7 +109,8 @@ def _validate_uuidv7(value: str) -> str:
 def _authorize(request: Request, authorization: str | None) -> None:
     """Require a shared token when configured; otherwise permit loopback development only."""
     if INGEST_TOKEN:
-        if authorization != f"Bearer {INGEST_TOKEN}":
+        expected = f"Bearer {INGEST_TOKEN}"
+        if authorization is None or not hmac.compare_digest(authorization, expected):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid ingest token"
             )

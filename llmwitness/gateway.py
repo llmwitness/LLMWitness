@@ -1,5 +1,6 @@
 """Localhost JSON proxy with best-effort audit scrubbing."""
 
+import hmac
 import json
 import os
 import time
@@ -46,7 +47,7 @@ def resolve_correlation_id(value: str | None) -> str:
 
 def _authorize_gateway(request: Request, token: str | None) -> None:
     if GATEWAY_TOKEN:
-        if token != GATEWAY_TOKEN:
+        if token is None or not hmac.compare_digest(token, GATEWAY_TOKEN):
             raise HTTPException(status_code=401, detail="Invalid gateway token")
         return
     host = request.client.host if request.client else ""
@@ -148,7 +149,16 @@ async def chat_completions_proxy(
         headers = {
             key: value
             for key, value in request.headers.items()
-            if key.lower() in {"authorization", "content-type", "accept", "user-agent"}
+            if key.lower()
+            in {
+                "authorization",
+                "content-type",
+                "accept",
+                "user-agent",
+                "openai-organization",
+                "openai-project",
+                "idempotency-key",
+            }
         }
         headers["X-LLMWitness-Correlation-ID"] = correlation_id
         try:
@@ -175,10 +185,17 @@ async def chat_completions_proxy(
             )
         response_body = upstream.content
         upstream_status = upstream.status_code
+        forwarded_response_headers = {
+            "content-type",
+            "retry-after",
+            "x-request-id",
+            "openai-processing-ms",
+        }
         upstream_headers = {
             key: value
             for key, value in upstream.headers.items()
-            if key.lower() in {"content-type", "retry-after", "x-request-id"}
+            if key.lower() in forwarded_response_headers
+            or key.lower().startswith("x-ratelimit-")
         }
         audit_response = _audit_copy(upstream)
         upstream_label = target_url

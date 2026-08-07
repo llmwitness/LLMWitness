@@ -18,7 +18,7 @@ The gateway returns the upstream response body to the application without applyi
 
 ## Install from source
 
-No PyPI release is claimed by this repository yet.
+This repository is prepared for the first public `0.1.0` release on PyPI and GitHub.
 
 ```bash
 git clone https://github.com/llmwitness/LLMWitness.git
@@ -83,6 +83,14 @@ Read [SECURITY.md](SECURITY.md) before using the project. The Community edition 
 ## Benchmarks
 
 No performance benchmark numbers are claimed or published for this release. The test suite checks correctness and bounded behavior; it is not evidence of production latency, throughput, scalability, or a service-level objective. Any future benchmark publication must include the exact commit, environment, workload, sample count, methodology, and raw results.
+
+Run the machine-specific development benchmark harness locally:
+
+```bash
+python -m benchmarks.benchmark_local --iterations 1000 --warmup 100
+```
+
+See [benchmarks/README.md](benchmarks/README.md) for methodology and JSON output options.
 
 ## License
 

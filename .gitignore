@@ -3,6 +3,8 @@ __pycache__/
 *.pyo
 *.pyd
 .pytest_cache/
+.coverage
+htmlcov/
 .test-tmp/
 .DS_Store
 
@@ -18,3 +20,4 @@ proof.json
 .llmwitness/
 *.db
 *.log
+benchmark_results*.json

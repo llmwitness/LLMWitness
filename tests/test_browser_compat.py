@@ -60,6 +60,21 @@ def test_extension_sidecar_uses_shared_uuidv7_contract():
     assert "correlation_id: getActiveCorrelationId()" in code
 
 
+def test_browser_bridge_bounds_queue_and_omits_url_query_strings():
+    js_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "llmwitness.js")
+    )
+    with open(js_path, encoding="utf-8") as f:
+        code = f.read()
+
+    assert "maxQueueSize" in code
+    assert "droppedEvents" in code
+    assert "window.location.origin" in code
+    assert "window.location.pathname" in code
+    assert "window.location.href" not in code
+    assert "input instanceof Request ? input.headers" in code
+
+
 def test_js_sdk_node_execution():
     """Runs node syntax validation on llmwitness.js if node binary exists."""
     js_path = os.path.abspath(
@@ -71,6 +86,33 @@ def test_js_sdk_node_execution():
             pytest.fail(f"JavaScript SDK syntax check failed: {res.stderr}")
     except FileNotFoundError:
         pytest.skip("Node.js binary not installed on runner path")
+
+
+def test_js_sdk_runtime_uuid_and_queue_contract():
+    """Exercise exported browser-bridge behavior in Node when available."""
+    js_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "llmwitness.js")
+    )
+    script = r"""
+const sdk = require(process.argv[1]);
+const pattern = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+for (let index = 0; index < 1000; index += 1) {
+  if (!pattern.test(sdk.generateUUIDv7())) process.exit(2);
+}
+const bridge = new sdk.LLMWitnessBridge({maxQueueSize: 2, debounceMs: 60000});
+bridge.enqueue({event_type: 'one', dom_delta: {}});
+bridge.enqueue({event_type: 'two', dom_delta: {}});
+bridge.enqueue({event_type: 'three', dom_delta: {}});
+if (bridge.queue.length !== 2 || bridge.droppedEvents !== 1) process.exit(3);
+clearTimeout(bridge.timer);
+"""
+    try:
+        result = subprocess.run(
+            ["node", "-e", script, js_path], capture_output=True, text=True, timeout=10
+        )
+    except FileNotFoundError:
+        pytest.skip("Node.js binary not installed on runner path")
+    assert result.returncode == 0, result.stderr
 
 
 def test_extension_content_script_node_syntax():
