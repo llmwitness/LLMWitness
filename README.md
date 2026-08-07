@@ -2,7 +2,7 @@
 
 LLMWitness Community is a **local-first telemetry toolkit for AI-agent runs**. It correlates SDK, gateway, and browser events with UUIDv7 identifiers, applies best-effort pattern scrubbing to audit copies, and creates locally verifiable tamper-evident receipts.
 
-> **Community limitations:** `0.1.0` is intended for single-user localhost development. Pattern scrubbing cannot guarantee removal of all personal or secret data. Local receipt files are ordinary filesâ€”not immutable storage, WORM storage, legal evidence, or a compliance certification. Telemetry delivery is best-effort. Do not expose the services to untrusted networks or use them as a high-security production control plane.
+> **Community limitations:** `0.1.0` is intended for single-user localhost development. Pattern scrubbing cannot guarantee removal of all personal or secret data. Local receipt files are ordinary files—not immutable storage, WORM storage, legal evidence, or a compliance certification. Telemetry delivery is best-effort. Do not expose the services to untrusted networks or use them as a high-security production control plane.
 
 ## Available now
 
@@ -72,11 +72,11 @@ Verification proves that the signed fields match the public key embedded in the 
 
 ## Product boundary
 
-**LLMWitness Community â€” available in this Apache-2.0 repository:** the SDK, localhost gateway, heuristic scrubber, local ingestion service, local tamper-evident receipts, browser components, and CLI.
+**LLMWitness Community — available in this Apache-2.0 repository:** the SDK, localhost gateway, heuristic scrubber, local ingestion service, local tamper-evident receipts, browser components, and CLI.
 
-**LLMWitness Cloud â€” planned, not available:** a managed service, team dashboard, hosted analytics, and operational management. Its implementation is not in this repository and is intended to remain proprietary.
+**LLMWitness Cloud — planned, not available:** a managed service, team dashboard, hosted analytics, and operational management. Its implementation is not in this repository and is intended to remain proprietary.
 
-**LLMWitness Enterprise â€” planned, not available:** multi-tenancy, RBAC/SSO, distributed storage and cache, Object Lock, HSM/KMS, policy enforcement, high availability, reporting workflows, and enterprise UI. These components are not implemented here and are intended to remain proprietary.
+**LLMWitness Enterprise — planned, not available:** multi-tenancy, RBAC/SSO, distributed storage and cache, Object Lock, HSM/KMS, policy enforcement, high availability, reporting workflows, and enterprise UI. These components are not implemented here and are intended to remain proprietary.
 
 LLMWitness does not establish compliance with HIPAA, GDPR, SOC 2, the EU AI Act, or any other law or framework. Applicability depends on the deployment, processing purposes, jurisdiction, contracts, technical controls, and organizational practices. Obtain qualified legal and security advice.
 
