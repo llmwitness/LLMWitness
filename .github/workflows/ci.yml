@@ -2,9 +2,9 @@ name: LLMWitness CI Matrix & Code Quality
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, integ ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, integ ]
 
 jobs:
   lint-and-format:
