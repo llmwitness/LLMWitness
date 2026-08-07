@@ -52,6 +52,10 @@ print(correlation_id, tracker.dropped_events, tracker.delivery_failures)
 
 If `LLMWITNESS_INGEST_TOKEN` is configured on the ingestion service, the SDK and gateway read the same variable and authenticate their telemetry submissions. Without a token, ingestion is restricted to loopback development clients.
 
+## Examples
+
+See [`examples/README.md`](examples/README.md) for small integration snippets covering OpenAI wrapping, chain correlation, multi-agent runs, and browser extension setup.
+
 ## Create and verify a receipt
 
 After telemetry exists for a correlation ID:
