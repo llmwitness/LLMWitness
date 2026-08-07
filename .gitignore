@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.test-tmp/
+.DS_Store
+
+# Build and distribution artifacts
+dist/
+build/
+*.egg-info/
+*.whl
+*.tar.gz
+
+# Runtime vaults and proof receipts
+proof.json
+.llmwitness/
+*.db
+*.log

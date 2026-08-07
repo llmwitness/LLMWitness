@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmwitness"
+version = "0.1.0"
+description = "Local-first telemetry and tamper-evident receipts for AI-agent runs"
+readme = "README.md"
+authors = [
+    { name = "LLMWitness maintainers" }
+]
+license = "Apache-2.0"
+requires-python = ">=3.10"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Logging",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+    "cryptography>=41.0.0",
+    "httpx>=0.24.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "hypothesis>=6.80.0",
+    "build>=0.10.0",
+    "twine>=4.0.2",
+    "mypy>=1.5.0",
+    "black>=24.0.0",
+    "ruff>=0.8.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/llmwitness/LLMWitness"
+Repository = "https://github.com/llmwitness/LLMWitness.git"
+Issues = "https://github.com/llmwitness/LLMWitness/issues"
+
+[project.scripts]
+llmwitness = "llmwitness.cli:main"
+
+[tool.setuptools]
+packages = ["llmwitness"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_configs = true

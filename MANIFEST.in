@@ -1,0 +1,8 @@
+include README.md
+include LICENSE
+include NOTICE
+include pyproject.toml
+include llmwitness.js
+
+recursive-include extension *.json *.js
+prune tests

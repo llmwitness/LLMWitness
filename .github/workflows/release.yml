@@ -1,0 +1,20 @@
+name: LLMWitness release candidate validation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --upgrade pip build twine
+      - run: python -m build
+      - run: twine check dist/*
+
+# Publication is intentionally disabled. Add a separate,
+# reviewed publishing job only after namespace, trademark, metadata, tag, secret,
+# package-content, and security checks have passed.
