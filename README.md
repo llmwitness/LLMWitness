@@ -54,7 +54,7 @@ If `LLMWITNESS_INGEST_TOKEN` is configured on the ingestion service, the SDK and
 
 ## Examples
 
-See [`examples/README.md`](examples/README.md) for small integration snippets covering OpenAI wrapping, chain correlation, multi-agent runs, and browser extension setup.
+See [`examples/README.md`](examples/README.md) for small integration snippets covering OpenAI wrapping, LangChain, LangGraph, AutoGen/CrewAI-style runs, and browser extension setup.
 
 ## Create and verify a receipt
 
