@@ -38,7 +38,11 @@ def summarize(samples_ns: list[int]) -> dict[str, float | int]:
     return {
         "samples": len(values_us),
         "mean_us": round(statistics.fmean(values_us), 3),
+        "stdev_us": (
+            round(statistics.stdev(values_us), 3) if len(values_us) > 1 else 0.0
+        ),
         "p50_us": round(percentile(values_us, 0.50), 3),
+        "p90_us": round(percentile(values_us, 0.90), 3),
         "p95_us": round(percentile(values_us, 0.95), 3),
         "p99_us": round(percentile(values_us, 0.99), 3),
         "min_us": round(values_us[0], 3),
@@ -194,6 +198,8 @@ def run(iterations: int, warmup: int) -> dict[str, Any]:
         },
         "methodology": {
             "clock": "time.perf_counter_ns",
+            "percentile_method": "nearest-rank observation from sorted samples",
+            "standard_deviation": "sample standard deviation",
             "iterations_per_case": iterations,
             "warmup_iterations_per_case": warmup,
             "process_model": "single process",

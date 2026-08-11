@@ -3,7 +3,6 @@ name: Publish LLMWitness to PyPI
 on:
   release:
     types: [published]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,11 +16,28 @@ jobs:
       url: https://pypi.org/project/llmwitness/
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Validate release tag and source branch
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          if [ "$RELEASE_TAG" != "v$VERSION" ]; then
+            echo "Release tag $RELEASE_TAG does not match package version v$VERSION."
+            exit 1
+          fi
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "Release commit must be present on main."
+            exit 1
+          fi
 
       - name: Build release artifacts
         run: |
@@ -29,9 +45,8 @@ jobs:
           python -m build
           twine check dist/*
 
-      # Trusted Publishing is enabled from the PyPI project settings.
-      # Once the PyPI publisher entry is connected to this GitHub repo,
-      # this action can publish without an API token.
+      # The PyPI Trusted Publisher entry must match this repository,
+      # workflow filename, and the `pypi` environment.
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 

@@ -3,8 +3,9 @@
 These examples show the smallest practical integration paths for LLMWitness Community.
 
 - `openai_wrapper.py` demonstrates wrapping an OpenAI client.
-- `langchain_callback.py` shows correlation binding for a chain run.
-- `autogen_crew.py` shows recording a multi-agent task with the SDK.
+- `langchain_callback.py` shows correlation binding for a LangChain-style chain run.
+- `langgraph_example.py` shows attaching correlation to a LangGraph flow.
+- `autogen_crew.py` shows recording an AutoGen or CrewAI-style multi-agent task.
 - `browser_extension_setup.md` shows how to load the optional browser extension.
 
 The examples are intentionally minimal so they can be copied into real projects without extra framework overhead.
