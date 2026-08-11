@@ -4,6 +4,10 @@ LLMWitness Community is a **local-first telemetry toolkit for AI-agent runs**. I
 
 > **Community limitations:** `0.1.0` is intended for single-user localhost development. Pattern scrubbing cannot guarantee removal of all personal or secret data. Local receipt files are ordinary files—not immutable storage, WORM storage, legal evidence, or a compliance certification. Telemetry delivery is best-effort. Do not expose the services to untrusted networks or use them as a high-security production control plane.
 
+![LLMWitness receipt verification demonstration](docs/assets/launch/demo.gif)
+
+The demonstration uses synthetic data. It verifies an untouched local receipt, changes one signed field, and shows the modified copy being rejected.
+
 ## Available now
 
 - Python SDK with a bounded background telemetry queue and observable drop/failure counters.
@@ -16,7 +20,11 @@ LLMWitness Community is a **local-first telemetry toolkit for AI-agent runs**. I
 
 The gateway returns the upstream response body to the application without applying audit redaction to that response. Streaming, broad OpenAI compatibility, Anthropic compatibility, multi-tenancy, durable delivery, and distributed operation are not currently claimed.
 
-## Install from source
+## Community architecture
+
+![LLMWitness Community architecture](docs/assets/launch/architecture.png)
+
+## Install
 
 Install the published `0.1.0` package from PyPI:
 
