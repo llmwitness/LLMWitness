@@ -3,7 +3,6 @@ name: Publish LLMWitness to PyPI
 on:
   release:
     types: [published]
-  workflow_dispatch:
 
 permissions:
   contents: read

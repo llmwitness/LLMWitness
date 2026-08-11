@@ -19,7 +19,7 @@ mypy --config-file pyproject.toml llmwitness
 python -m build
 ```
 
-Do not commit receipts, logs, generated packages, benchmark outputs, credentials, personal data, private prompts, or proprietary Cloud/Enterprise implementation. Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+Do not commit receipts, logs, generated packages, ad hoc benchmark outputs, credentials, personal data, private prompts, or proprietary Cloud/Enterprise implementation. A maintainer may accept a curated benchmark reference only when it includes the exact commit, environment, workload, method, sample counts, raw results, and explicit non-SLA limitations. Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 Contributions are accepted under Apache-2.0. Contributors must have the right to submit their work. Repository owners should obtain legal advice before introducing a contributor agreement or attempting future relicensing.
 

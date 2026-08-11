@@ -12,7 +12,9 @@ jobs:
       - name: Require main PRs to come from integ
         shell: bash
         run: |
-          if [ "${{ github.base_ref }}" = "main" ] && [ "${{ github.head_ref }}" != "integ" ]; then
-            echo "Pull requests to main must come from integ."
-            exit 1
+          if [ "${{ github.base_ref }}" = "main" ]; then
+            if [ "${{ github.head_ref }}" != "integ" ] || [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+              echo "Pull requests to main must come from this repository's integ branch."
+              exit 1
+            fi
           fi

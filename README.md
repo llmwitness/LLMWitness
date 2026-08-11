@@ -2,7 +2,7 @@
 
 LLMWitness Community is a **local-first telemetry toolkit for AI-agent runs**. It correlates SDK, gateway, and browser events with UUIDv7 identifiers, applies best-effort pattern scrubbing to audit copies, and creates locally verifiable tamper-evident receipts.
 
-> **Community limitations:** `0.1.0` is intended for single-user localhost development. Pattern scrubbing cannot guarantee removal of all personal or secret data. Local receipt files are ordinary files—not immutable storage, WORM storage, legal evidence, or a compliance certification. Telemetry delivery is best-effort. Do not expose the services to untrusted networks or use them as a high-security production control plane.
+> **Community limitations:** `0.1.0` is intended for single-user localhost development. Pattern scrubbing cannot guarantee removal of all personal or secret data. Local receipt files are ordinary filesâ€”not immutable storage, WORM storage, legal evidence, or a compliance certification. Telemetry delivery is best-effort. Do not expose the services to untrusted networks or use them as a high-security production control plane.
 
 ## Available now
 
@@ -18,7 +18,13 @@ The gateway returns the upstream response body to the application without applyi
 
 ## Install from source
 
-This repository is prepared for the first public `0.1.0` release on PyPI and GitHub.
+Install the published `0.1.0` package from PyPI:
+
+```bash
+python -m pip install llmwitness==0.1.0
+```
+
+To work from source instead:
 
 ```bash
 git clone https://github.com/llmwitness/LLMWitness.git
@@ -72,11 +78,11 @@ Verification proves that the signed fields match the public key embedded in the 
 
 ## Product boundary
 
-**LLMWitness Community — available in this Apache-2.0 repository:** the SDK, localhost gateway, heuristic scrubber, local ingestion service, local tamper-evident receipts, browser components, and CLI.
+**LLMWitness Community â€” available in this Apache-2.0 repository:** the SDK, localhost gateway, heuristic scrubber, local ingestion service, local tamper-evident receipts, browser components, and CLI.
 
-**LLMWitness Cloud — planned, not available:** a managed service, team dashboard, hosted analytics, and operational management. Its implementation is not in this repository and is intended to remain proprietary.
+**LLMWitness Cloud â€” planned, not available:** a managed service, team dashboard, hosted analytics, and operational management. Its implementation is not in this repository and is intended to remain proprietary.
 
-**LLMWitness Enterprise — planned, not available:** multi-tenancy, RBAC/SSO, distributed storage and cache, Object Lock, HSM/KMS, policy enforcement, high availability, reporting workflows, and enterprise UI. These components are not implemented here and are intended to remain proprietary.
+**LLMWitness Enterprise â€” planned, not available:** multi-tenancy, RBAC/SSO, distributed storage and cache, Object Lock, HSM/KMS, policy enforcement, high availability, reporting workflows, and enterprise UI. These components are not implemented here and are intended to remain proprietary.
 
 LLMWitness does not establish compliance with HIPAA, GDPR, SOC 2, the EU AI Act, or any other law or framework. Applicability depends on the deployment, processing purposes, jurisdiction, contracts, technical controls, and organizational practices. Obtain qualified legal and security advice.
 
@@ -90,7 +96,7 @@ Read [SECURITY.md](SECURITY.md) before using the project. The Community edition 
 
 ## Benchmarks
 
-No performance benchmark numbers are claimed or published for this release. The test suite checks correctness and bounded behavior; it is not evidence of production latency, throughput, scalability, or a service-level objective. Any future benchmark publication must include the exact commit, environment, workload, sample count, methodology, and raw results.
+The repository includes a machine-specific development benchmark reference with p50, p90, p95, p99, mean, standard deviation, minimum, and maximum latency. It records the exact commit, runtime, dependency versions, workload, sample count, and warmup count. These microbenchmarks are reproducibility and regression references--not production latency, throughput, scalability, comparative-performance, or service-level claims.
 
 Run the machine-specific development benchmark harness locally:
 
@@ -98,7 +104,7 @@ Run the machine-specific development benchmark harness locally:
 python -m benchmarks.benchmark_local --iterations 1000 --warmup 100
 ```
 
-See [benchmarks/README.md](benchmarks/README.md) for methodology and JSON output options.
+See [benchmarks/README.md](benchmarks/README.md) for methodology, limitations, the published reference report, and raw JSON.
 
 ## License
 

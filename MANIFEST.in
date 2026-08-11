@@ -5,6 +5,6 @@ include pyproject.toml
 include llmwitness.js
 
 recursive-include extension *.json *.js
-recursive-include benchmarks *.py *.md
+recursive-include benchmarks *.py *.md *.json
 recursive-include examples *.py *.md
 prune tests
