@@ -18,7 +18,13 @@ The gateway returns the upstream response body to the application without applyi
 
 ## Install from source
 
-This repository is prepared for the first public `0.1.0` release on PyPI and GitHub.
+Install the published `0.1.0` package from PyPI:
+
+```bash
+python -m pip install llmwitness==0.1.0
+```
+
+To work from source instead:
 
 ```bash
 git clone https://github.com/llmwitness/LLMWitness.git
@@ -54,7 +60,7 @@ If `LLMWITNESS_INGEST_TOKEN` is configured on the ingestion service, the SDK and
 
 ## Examples
 
-See [`examples/README.md`](examples/README.md) for small integration snippets covering OpenAI wrapping, chain correlation, multi-agent runs, and browser extension setup.
+See [`examples/README.md`](examples/README.md) for small integration snippets covering OpenAI wrapping, LangChain, LangGraph, AutoGen/CrewAI-style runs, and browser extension setup.
 
 ## Create and verify a receipt
 
@@ -90,7 +96,7 @@ Read [SECURITY.md](SECURITY.md) before using the project. The Community edition 
 
 ## Benchmarks
 
-No performance benchmark numbers are claimed or published for this release. The test suite checks correctness and bounded behavior; it is not evidence of production latency, throughput, scalability, or a service-level objective. Any future benchmark publication must include the exact commit, environment, workload, sample count, methodology, and raw results.
+The repository includes a machine-specific development benchmark reference with p50, p90, p95, p99, mean, standard deviation, minimum, and maximum latency. It records the exact commit, runtime, dependency versions, workload, sample count, and warmup count. These microbenchmarks are reproducibility and regression references--not production latency, throughput, scalability, comparative-performance, or service-level claims.
 
 Run the machine-specific development benchmark harness locally:
 
@@ -98,7 +104,7 @@ Run the machine-specific development benchmark harness locally:
 python -m benchmarks.benchmark_local --iterations 1000 --warmup 100
 ```
 
-See [benchmarks/README.md](benchmarks/README.md) for methodology and JSON output options.
+See [benchmarks/README.md](benchmarks/README.md) for methodology, limitations, the published reference report, and raw JSON.
 
 ## License
 
