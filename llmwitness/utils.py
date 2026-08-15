@@ -48,7 +48,7 @@ DATA_IMAGE_REGEX = re.compile(
     r"data:image\/[a-zA-Z0-9\+\-\.]+;base64,([A-Za-z0-9+/=]+)"
 )
 DATA_IMAGE_WRAPPED_REGEX = re.compile(
-    r"data:image\/[a-zA-Z0-9\+\-\.]+;base64,([A-Za-z0-9+/=\s]+)"
+    r"data:image\/[a-zA-Z0-9\+\-\.]+;base64,([A-Za-z0-9+/=\r\n]+)"
 )
 
 
